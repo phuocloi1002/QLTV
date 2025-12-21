@@ -1,3 +1,5 @@
+
+
 CREATE TABLE book
 (
     id             CHAR(36)     NOT NULL,
@@ -220,8 +222,8 @@ CREATE TABLE user
 
 CREATE TABLE user_role
 (
-    user_id VARCHAR(255) NOT NULL,
-    role_id VARCHAR(255) NOT NULL,
+    user_id Char(36) NOT NULL,
+    role_id Char(36) NOT NULL,
     CONSTRAINT pk_userrole PRIMARY KEY (user_id, role_id)
 );
 

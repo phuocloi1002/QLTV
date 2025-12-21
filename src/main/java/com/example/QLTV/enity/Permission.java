@@ -1,12 +1,14 @@
 package com.example.QLTV.enity;
 
-import com.example.QLTV.enity.enums.IncidentPriority;
-import com.example.QLTV.enity.enums.IncidentStatus;
+import com.example.QLTV.enity.enums.PermissionName;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.type.SqlTypes;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -15,19 +17,21 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Incident extends BaseEntity {
+@Table(name = "permission")
+public class Permission extends BaseEntity {
 
     @Id
     @UuidGenerator
+    @JdbcTypeCode(SqlTypes.CHAR)
     @Column(name = "id", columnDefinition = "CHAR(36)")
     UUID id;
 
-    String title;
+    @Enumerated(EnumType.STRING)
+    @Column(unique = true, nullable = false)
+    PermissionName name;
+
     String description;
 
-    @Enumerated(EnumType.STRING)
-    IncidentPriority priority;
-
-    @Enumerated(EnumType.STRING)
-    IncidentStatus status;
+    @ManyToMany(mappedBy = "permissions")
+    Set<Role> roles;
 }

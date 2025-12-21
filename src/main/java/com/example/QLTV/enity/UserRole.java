@@ -7,12 +7,14 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRole {
     @EmbeddedId
-    UserRoleId id;
+    @Builder.Default // <--- Giúp Builder khởi tạo đối tượng này thay vì để null
+    UserRoleId id = new UserRoleId();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("userId")

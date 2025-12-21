@@ -29,6 +29,14 @@ dependencies {
     implementation 'org.flywaydb:flyway-mysql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // Thư viện để tạo và xác thực Token (Nimbus JOSE + JWT)
+    implementation 'com.nimbusds:nimbus-jose-jwt:9.37.3'
+
+// Hỗ trợ Spring Security xử lý OAuth2/JWT dễ dàng hơn
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 }
 
 tasks.named('test') {

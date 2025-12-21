@@ -4,12 +4,14 @@ import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
 @MappedSuperclass
 @Getter
 @Setter
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -27,6 +29,6 @@ public abstract class BaseEntity {
     @Column(name = "updated_by", columnDefinition = "VARCHAR(36)")
     String updatedBy;
 
-    @Column(name = "is_deleted")
+    @Column(name = "is_deleted", columnDefinition = "BIT(1) DEFAULT 0")
     Boolean isDeleted = false;
 }
