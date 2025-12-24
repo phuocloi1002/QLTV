@@ -18,4 +18,6 @@ public interface IStaffService {
     void deleteStaff(String staffId);
 
     Staff getStaffEntityById(String staffId);
+
+    StaffResponse getStaffResponseById(String staffId);
 }

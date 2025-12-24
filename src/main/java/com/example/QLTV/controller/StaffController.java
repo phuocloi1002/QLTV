@@ -40,6 +40,18 @@ public class StaffController {
                         .build());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<StaffResponse>> getStaffById(@PathVariable String id) {
+        // Lưu ý: Bạn cần dùng hàm getStaffResponseById (trả về DTO)
+        // thay vì getStaffEntityById (trả về Entity)
+        StaffResponse staff = staffService.getStaffResponseById(id);
+
+        return ResponseEntity.ok(ApiResponse.<StaffResponse>builder()
+                .code(1000)
+                .data(staff)
+                .build());
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<StaffResponse>> updateStaff(
             @PathVariable String id,

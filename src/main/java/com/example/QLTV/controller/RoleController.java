@@ -44,6 +44,15 @@ public class RoleController {
                 .build());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<RoleResponse>> getRoleById(@PathVariable String id) {
+        RoleResponse role = roleService.getRoleById(id);
+        return ResponseEntity.ok(ApiResponse.<RoleResponse>builder()
+                .code(1000)
+                .data(role)
+                .build());
+    }
+
     @PutMapping("/{roleId}")
     public ResponseEntity<ApiResponse<RoleResponse>> updateRole(
             @PathVariable("roleId") String roleId,
@@ -57,12 +66,8 @@ public class RoleController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<RoleResponse>> deleteRole(@PathVariable String id) {
-        RoleResponse deletedRole = roleService.deleteRole(id);
-        return ResponseEntity.ok(ApiResponse.<RoleResponse>builder()
-                .code(1000)
-                .message("Role has been deleted (Soft Delete)")
-                .data(deletedRole)
-                .build());
+    @ResponseStatus(HttpStatus.NO_CONTENT) // Trả về mã 204
+    public void deleteRole(@PathVariable String id) {
+        roleService.deleteRole(id);
     }
 }

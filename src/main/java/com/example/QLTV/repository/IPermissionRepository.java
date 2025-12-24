@@ -1,12 +1,16 @@
 package com.example.QLTV.repository;
 
 import com.example.QLTV.enity.Permission;
-import com.example.QLTV.enity.enums.PermissionName;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
+@Repository
 public interface IPermissionRepository extends JpaRepository<Permission, UUID> {
-    Optional<Permission> findByName(PermissionName name);
-    List<Permission> findByNameIn(Collection<PermissionName> names);
+    Optional<Permission> findByName(String name);
+
+    boolean existsByName(String name);
+
+    List<Permission> findByNameIn(Collection<String> names);
 }

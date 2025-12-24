@@ -37,6 +37,11 @@ dependencies {
 
 // Hỗ trợ Spring Security xử lý OAuth2/JWT dễ dàng hơn
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+
+    //Mapper
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+
 }
 
 tasks.named('test') {

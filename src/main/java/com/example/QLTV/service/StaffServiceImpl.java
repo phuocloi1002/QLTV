@@ -147,7 +147,7 @@ public class StaffServiceImpl implements IStaffService {
             if (user.getUserRoles() != null) {
                 Set<String> roles = user.getUserRoles().stream()
                         .filter(ur -> ur.getRole() != null)
-                        .map(ur -> ur.getRole().getName().name())
+                        .map(ur -> ur.getRole().getName())
                         .collect(Collectors.toSet());
                 builder.roles(roles);
             }
@@ -156,5 +156,12 @@ public class StaffServiceImpl implements IStaffService {
         }
 
         return builder.build();
+    }
+
+    @Override
+    public StaffResponse getStaffResponseById(String staffId) {
+        Staff staff = getStaffEntityById(staffId);
+
+        return convertToStaffResponse(staff);
     }
 }

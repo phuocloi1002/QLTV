@@ -67,11 +67,11 @@ public class AuthenticationService {
         JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
 
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-                .subject(user.getId().toString()) // Lưu ID user vào sub
+                .subject(user.getId().toString())
                 .issuer("qltv.com")
                 .issueTime(new Date())
                 .expirationTime(Date.from(Instant.now().plus(1, ChronoUnit.HOURS))) // Hết hạn sau 1 giờ
-                .claim("scope", buildScope(user)) // Lưu các quyền vào scope
+                .claim("scope", buildScope(user))
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -93,12 +93,12 @@ public class AuthenticationService {
             user.getUserRoles().forEach(userRole -> {
                 Role role = userRole.getRole();
                 // Thêm ROLE_ trước tên Role
-                stringJoiner.add("ROLE_" + role.getName().name());
+                stringJoiner.add("ROLE_" + role.getName());
 
                 // Thêm các quyền (Permission) chi tiết
                 if (!CollectionUtils.isEmpty(role.getPermissions())) {
                     role.getPermissions().forEach(permission -> {
-                        stringJoiner.add(permission.getName().name());
+                        stringJoiner.add(permission.getName());
                     });
                 }
             });

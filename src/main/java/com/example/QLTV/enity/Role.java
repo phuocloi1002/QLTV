@@ -1,6 +1,5 @@
 package com.example.QLTV.enity;
 
-import com.example.QLTV.enity.enums.RoleName;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -27,9 +26,8 @@ public class Role extends BaseEntity {
     @Column(name = "id", columnDefinition = "CHAR(36)")
     UUID id;
 
-    @Enumerated(EnumType.STRING)
     @Column(unique = true, nullable = false)
-    RoleName name;
+    String name;
 
     String description;
 

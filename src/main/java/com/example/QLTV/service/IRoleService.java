@@ -14,10 +14,12 @@ public interface IRoleService {
 
     RoleResponse updateRole(String roleId,RoleCreationRequest request);
 
-    RoleResponse  deleteRole(String roleId);
+    void  deleteRole(String roleId);
 
     Role getRoleEntityById(String roleId);
 
     Role getRoleEntityByName(String roleName);
+
+    RoleResponse getRoleById(String roleId);
 
 }

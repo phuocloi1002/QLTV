@@ -44,6 +44,7 @@ public enum ErrorCode {
 
     ROLE_NOT_FOUND(6001, "Role not found.", HttpStatus.NOT_FOUND),
     PERMISSION_NOT_FOUND(6002, "Permission not found.", HttpStatus.NOT_FOUND),
+    PERMISSION_EXISTED(6005, "Permission already exists", HttpStatus.BAD_REQUEST),
     ROLE_NAME_EXISTED(6003, "Role name already existed.", HttpStatus.CONFLICT),
     INVALID_ROLE_NAME(6004, "Invalid role name.", HttpStatus.BAD_REQUEST),
 
@@ -51,6 +52,8 @@ public enum ErrorCode {
     STAFF_NOT_EXISTED(7001, "Staff not found.", HttpStatus.NOT_FOUND),
     STAFF_CODE_EXISTED(7002, "Staff code already existed.", HttpStatus.CONFLICT),
     STAFF_ALREADY_DELETED(7003, "Staff has already been deleted.", HttpStatus.BAD_REQUEST),
+
+
 
 
 

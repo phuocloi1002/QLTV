@@ -1,18 +1,15 @@
 package com.example.QLTV.dto.request;
 
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Set;
-
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RoleCreationRequest {
-
+public class PermissionRequest {
     String name;
-
     String description;
-
-    Set<String> permissionNames;
 }

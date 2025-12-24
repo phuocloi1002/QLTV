@@ -13,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRole {
     @EmbeddedId
-    @Builder.Default // <--- Giúp Builder khởi tạo đối tượng này thay vì để null
+    @Builder.Default
     UserRoleId id = new UserRoleId();
 
     @ManyToOne(fetch = FetchType.LAZY)
