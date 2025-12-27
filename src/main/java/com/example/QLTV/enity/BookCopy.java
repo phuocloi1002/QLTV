@@ -5,8 +5,10 @@ import com.example.QLTV.enity.enums.BookStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.sql.Types;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +23,7 @@ public class BookCopy extends BaseEntity {
 
     @Id
     @UuidGenerator
+    @JdbcTypeCode(Types.VARCHAR)
     @Column(name = "id", columnDefinition = "CHAR(36)")
     UUID id;
 

@@ -3,8 +3,10 @@ package com.example.QLTV.enity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.sql.Types;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,6 +19,7 @@ import java.util.UUID;
 public class Book extends BaseEntity {
     @Id
     @UuidGenerator
+    @JdbcTypeCode(Types.VARCHAR)
     @Column(name = "id", columnDefinition = "CHAR(36)")
     UUID id;
 
@@ -35,9 +38,9 @@ public class Book extends BaseEntity {
     Double price;
     String shelfCode;
 
-    @OneToMany(mappedBy = "book")
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     List<BookCopy> copies;
 
-    @OneToMany(mappedBy = "book")
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     List<Review> reviews;
 }

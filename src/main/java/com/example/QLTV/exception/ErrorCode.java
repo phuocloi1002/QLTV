@@ -29,6 +29,8 @@ public enum ErrorCode {
     ISBN_EXISTED(3003, "ISBN already existed.", HttpStatus.CONFLICT),
     COPY_NOT_AVAILABLE(3004, "Book copy is not available for loan.", HttpStatus.CONFLICT),
 
+    COPY_CANNOT_DELETE_BORROWED(3005, "Cannot delete a book copy that is currently borrowed.", HttpStatus.BAD_REQUEST),
+
 
     MAX_LOAN_LIMIT_EXCEEDED(4001, "Maximum loan limit exceeded.", HttpStatus.BAD_REQUEST),
     OUTSTANDING_FINE_EXIST(4002, "Outstanding fine prevents new transaction.", HttpStatus.FORBIDDEN),
@@ -52,6 +54,8 @@ public enum ErrorCode {
     STAFF_NOT_EXISTED(7001, "Staff not found.", HttpStatus.NOT_FOUND),
     STAFF_CODE_EXISTED(7002, "Staff code already existed.", HttpStatus.CONFLICT),
     STAFF_ALREADY_DELETED(7003, "Staff has already been deleted.", HttpStatus.BAD_REQUEST),
+
+
 
 
 

@@ -39,14 +39,15 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter())
-                        )
+                        .anyRequest().permitAll()
+                        //.requestMatchers("/api/auth/**").permitAll()
+                        //.anyRequest().authenticated()
                 );
+//                .oauth2ResourceServer(oauth2 -> oauth2
+//                        .jwt(jwt -> jwt
+//                                .jwtAuthenticationConverter(jwtAuthenticationConverter())
+//                        )
+//                );
 
         return http.build();
     }
