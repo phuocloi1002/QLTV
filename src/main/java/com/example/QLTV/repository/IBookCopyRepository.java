@@ -12,12 +12,12 @@ import java.util.UUID;
 @Repository
 public interface IBookCopyRepository extends JpaRepository<BookCopy, UUID> {
 
-    List<BookCopy> findAllByBookId(UUID bookId);
+    // Chỉ lấy danh sách bản sao của 1 đầu sách mà chưa bị xóa mềm
+    List<BookCopy> findAllByBookIdAndIsDeletedFalse(UUID bookId);
 
-    // Tìm theo mã vạch (Barcode)
-    Optional<BookCopy> findByBarcode(String barcode);
+    // Tìm theo mã vạch và phải chưa bị xóa
+    Optional<BookCopy> findByBarcodeAndIsDeletedFalse(String barcode);
 
-    // ĐẾM số lượng bản in của 1 đầu sách theo trạng thái lưu thông
-    // Spring sẽ hiểu là: WHERE book_id = ? AND circulation_status = ?
-    long countByBookIdAndCirculationStatus(UUID bookId, BookStatus circulationStatus);
+    // Đếm số lượng bản in đang sẵn sàng (chỉ tính các bản chưa bị xóa)
+    long countByBookIdAndCirculationStatusAndIsDeletedFalse(UUID bookId, BookStatus status);
 }

@@ -4,6 +4,7 @@ import com.example.QLTV.dto.request.StaffCreationRequest;
 import com.example.QLTV.dto.request.StaffUpdateRequest;
 import com.example.QLTV.dto.response.StaffResponse;
 import com.example.QLTV.enity.Staff;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,4 +21,6 @@ public interface IStaffService {
     Staff getStaffEntityById(String staffId);
 
     StaffResponse getStaffResponseById(String staffId);
+
+    StaffResponse updateAvatar(String staffId, MultipartFile file);
 }

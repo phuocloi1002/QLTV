@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Set;
@@ -37,6 +38,7 @@ public class StaffServiceImpl implements IStaffService {
     IUserRoleRepository userRoleRepository;
     IRoleService roleService;
     PasswordEncoder passwordEncoder;
+    FileStorageService fileStorageService;
 
     @Override
     @Transactional
@@ -142,7 +144,8 @@ public class StaffServiceImpl implements IStaffService {
         if (user != null) {
             builder.email(user.getEmail())
                     .fullName(user.getFullName())
-                    .phone(user.getPhone());
+                    .phone(user.getPhone())
+                    .avatar(user.getAvatar());
 
             if (user.getUserRoles() != null) {
                 Set<String> roles = user.getUserRoles().stream()
@@ -164,4 +167,23 @@ public class StaffServiceImpl implements IStaffService {
 
         return convertToStaffResponse(staff);
     }
+
+    @Transactional
+    public StaffResponse updateAvatar(String staffId, MultipartFile file) {
+        // 1. Tìm Staff và User
+        Staff staff = getStaffEntityById(staffId);
+        User user = staff.getUser();
+
+        // 2. Lưu file vật lý qua LocalFileStorageService
+        // Trả về relative path (ví dụ: /images/uuid.png)
+        String relativePath = fileStorageService.store(user.getId(), file);
+
+        // 3. Cập nhật Database
+        user.setAvatar(relativePath);
+        userRepository.save(user);
+
+        return convertToStaffResponse(staff);
+    }
+
+
 }

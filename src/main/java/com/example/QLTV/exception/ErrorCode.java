@@ -55,8 +55,23 @@ public enum ErrorCode {
     STAFF_CODE_EXISTED(7002, "Staff code already existed.", HttpStatus.CONFLICT),
     STAFF_ALREADY_DELETED(7003, "Staff has already been deleted.", HttpStatus.BAD_REQUEST),
 
+    FILE_EMPTY(40001, "File must not be empty.", HttpStatus.BAD_REQUEST),
+    FILE_INVALID_TYPE(40002, "Only image files are allowed.", HttpStatus.BAD_REQUEST),
+    FILE_TOO_LARGE(40003, "File size exceeds the maximum allowed.", HttpStatus.BAD_REQUEST),
+    FILE_EXTENSION_MISSING(40004, "File extension is required.", HttpStatus.BAD_REQUEST),
+    FILE_UPLOAD_FAILED(50002, "Failed to store uploaded file.", HttpStatus.INTERNAL_SERVER_ERROR),
 
 
+    // STUDENT ERRORS (8000+)
+    STUDENT_NOT_FOUND(8001, "Student record not found.", HttpStatus.NOT_FOUND),
+    STUDENT_CODE_EXISTED(8002, "Student code already exists.", HttpStatus.CONFLICT),
+    STUDENT_ALREADY_ACTIVE(8003, "Student account is already activated.", HttpStatus.BAD_REQUEST),
+    STUDENT_LOCKED(8004, "Student account is locked due to policy violations.", HttpStatus.FORBIDDEN),
+    STUDENT_HAS_DEBT(8005, "Student has outstanding fines and cannot proceed.", HttpStatus.BAD_REQUEST),
+    INVALID_STUDENT_STATUS(8006, "Invalid status transition for student account.", HttpStatus.BAD_REQUEST),
+    BORROW_LIMIT_EXCEEDED(8007, "Student has exceeded the maximum number of borrowed books.", HttpStatus.BAD_REQUEST),
+    STUDENT_HAS_OVERDUE_BOOKS(8008, "Student has overdue books that must be returned first.", HttpStatus.BAD_REQUEST),
+    EMAIL_SENDING_FAILED(8009, "Failed to send activation email.", HttpStatus.INTERNAL_SERVER_ERROR),
 
 
 

@@ -46,4 +46,7 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user")
     List<Notification> notifications;
+
+    @Column(name = "avatar")
+    String avatar;
 }

@@ -25,4 +25,5 @@ public class StaffResponse {
     LocalDateTime createdAt;
 
     Set<String> roles;
+    String avatar;
 }

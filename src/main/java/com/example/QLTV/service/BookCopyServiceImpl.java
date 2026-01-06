@@ -15,6 +15,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -30,8 +31,9 @@ public class BookCopyServiceImpl implements IBookCopyService {
     @Override
     @Transactional
     public BookCopyResponse updateStatus(UUID copyId, BookCopyStatusRequest request) {
-        // 1. Tìm bản in theo ID
+        // 1. Tìm bản in theo ID và đảm bảo chưa bị xóa mềm
         BookCopy copy = bookCopyRepository.findById(copyId)
+                .filter(c -> !Boolean.TRUE.equals(c.getIsDeleted()))
                 .orElseThrow(() -> new ApiException(ErrorCode.COPY_NOT_FOUND));
 
         // 2. Cập nhật trạng thái lưu thông (Mượn/Trả/Mất)
@@ -49,6 +51,8 @@ public class BookCopyServiceImpl implements IBookCopyService {
             }
         }
 
+        copy.setUpdatedAt(LocalDateTime.now());
+
         // 4. Lưu và trả về kết quả qua Mapper
         return bookCopyMapper.toBookCopyResponse(bookCopyRepository.save(copy));
     }
@@ -56,13 +60,15 @@ public class BookCopyServiceImpl implements IBookCopyService {
     @Override
     public BookCopyResponse getCopyById(UUID copyId) {
         return bookCopyRepository.findById(copyId)
+                .filter(c -> !Boolean.TRUE.equals(c.getIsDeleted())) // Chỉ lấy bản chưa xóa
                 .map(bookCopyMapper::toBookCopyResponse)
                 .orElseThrow(() -> new ApiException(ErrorCode.COPY_NOT_FOUND));
     }
 
     @Override
     public List<BookCopyResponse> getCopiesByBookId(UUID bookId) {
-        return bookCopyRepository.findAllByBookId(bookId).stream()
+        // Sử dụng phương thức đã thêm vào Repository để lọc IsDeleted = False
+        return bookCopyRepository.findAllByBookIdAndIsDeletedFalse(bookId).stream()
                 .map(bookCopyMapper::toBookCopyResponse)
                 .collect(Collectors.toList());
     }
@@ -70,14 +76,25 @@ public class BookCopyServiceImpl implements IBookCopyService {
     @Override
     @Transactional
     public void deleteCopy(UUID copyId) {
+        // 1. Tìm bản sao trong DB
         BookCopy copy = bookCopyRepository.findById(copyId)
                 .orElseThrow(() -> new ApiException(ErrorCode.COPY_NOT_FOUND));
 
-        // Kiểm tra nếu sách đang được mượn thì không cho xóa
-        if (copy.getCirculationStatus() == BookStatus.BORROWED) {
-            throw new ApiException(ErrorCode.COPY_CANNOT_DELETE_BORROWED);
+        // 2. Kiểm tra nếu đã bị xóa mềm trước đó
+        if (Boolean.TRUE.equals(copy.getIsDeleted())) {
+            throw new ApiException(ErrorCode.COPY_NOT_FOUND);
         }
 
-        bookCopyRepository.delete(copy);
+        // 3. Kiểm tra ràng buộc: Không được xóa nếu sách đang bị mượn [cite: 97]
+        if (copy.getCirculationStatus() == BookStatus.BORROWED) {
+            throw new ApiException(ErrorCode.COPY_NOT_AVAILABLE);
+        }
+
+        // 4. Thực hiện xóa mềm (Cập nhật field từ BaseEntity)
+        copy.setIsDeleted(true);
+        copy.setUpdatedAt(LocalDateTime.now());
+
+        // 5. Lưu lại trạng thái mới thay vì xóa vật lý
+        bookCopyRepository.save(copy);
     }
 }

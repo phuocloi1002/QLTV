@@ -1,20 +1,17 @@
 package com.example.QLTV.dto.request;
 
 import com.example.QLTV.enity.enums.UserStatus;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class StaffUpdateRequest {
-
+public class StudentSearchRequest {
+    String studentCode;
     String fullName;
-    String phone;
-
     UserStatus status;
-    @JsonProperty("isDeleted")
-    Boolean isDeleted;
-
+    String faculty;
 }

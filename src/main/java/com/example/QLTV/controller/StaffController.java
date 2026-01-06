@@ -5,12 +5,14 @@ import com.example.QLTV.dto.request.StaffCreationRequest;
 import com.example.QLTV.dto.request.StaffUpdateRequest;
 import com.example.QLTV.dto.response.StaffResponse;
 import com.example.QLTV.service.IStaffService;
+import com.example.QLTV.util.JsonResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,57 +21,47 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class StaffController {
+
     IStaffService staffService;
+
     @PostMapping
-    public ResponseEntity<ApiResponse<StaffResponse>> createStaff(
-            @RequestBody StaffCreationRequest staffCreationRequest) {
-        StaffResponse staff = staffService.createStaff(staffCreationRequest);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.<StaffResponse>builder()
-                        .code(1000)
-                        .message("Staff created successfully")
-                        .data(staff)
-                        .build());
+    public ResponseEntity<ApiResponse<StaffResponse>> createStaff(@RequestBody StaffCreationRequest request) {
+        StaffResponse staff = staffService.createStaff(request);
+        return JsonResponse.created(staff, "Staff created successfully");
     }
+
     @GetMapping
-    public ResponseEntity<ApiResponse<List<StaffResponse>>> findAllStaff(){
+    public ResponseEntity<ApiResponse<List<StaffResponse>>> findAllStaff() {
         List<StaffResponse> staffs = staffService.findAllStaff();
-        return ResponseEntity.ok(ApiResponse.<List<StaffResponse>>builder()
-                        .code(1000)
-                        .data(staffs)
-                        .build());
+        return JsonResponse.ok(staffs);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<StaffResponse>> getStaffById(@PathVariable String id) {
-        // Lưu ý: Bạn cần dùng hàm getStaffResponseById (trả về DTO)
-        // thay vì getStaffEntityById (trả về Entity)
         StaffResponse staff = staffService.getStaffResponseById(id);
-
-        return ResponseEntity.ok(ApiResponse.<StaffResponse>builder()
-                .code(1000)
-                .data(staff)
-                .build());
+        return JsonResponse.ok(staff);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<StaffResponse>> updateStaff(
             @PathVariable String id,
-            @RequestBody StaffUpdateRequest request){
+            @RequestBody StaffUpdateRequest request) {
         StaffResponse staff = staffService.updateStaff(id, request);
-        return ResponseEntity.ok(ApiResponse.<StaffResponse>builder()
-                        .code(1000)
-                        .message("Staff updated successfully")
-                        .data(staff)
-                .build());
+        return JsonResponse.ok(staff);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Void>> deleteStaff(@PathVariable String id) {
         staffService.deleteStaff(id);
-        return ResponseEntity.ok(ApiResponse.<Void>builder()
-                .code(1000)
-                .message("Staff has been deleted")
-                .build());
+        return JsonResponse.ok(null);
+    }
+
+    @PostMapping(value = "/{id}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<StaffResponse>> uploadAvatar(
+            @PathVariable String id,
+            @RequestParam("file") MultipartFile file) {
+
+        StaffResponse response = staffService.updateAvatar(id, file);
+        return JsonResponse.ok(response);
     }
 }
