@@ -15,6 +15,7 @@ import com.example.QLTV.repository.IUserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,12 +30,14 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@Slf4j
 public class StudentServiceImpl implements IStudentService {
 
     IStudentRepository studentRepository;
     IUserRepository userRepository;
     PasswordEncoder passwordEncoder;
     IStudentMapper studentMapper;
+    EmailService emailService;
 
     @Override
     @Transactional
@@ -53,7 +56,7 @@ public class StudentServiceImpl implements IStudentService {
                 .phone(request.getPhoneNumber())
                 .status(UserStatus.INACTIVE)
                 .build();
-        user = userRepository.save(user);
+//        user = userRepository.save(user);
 
         Student student = Student.builder()
                 .studentCode(request.getStudentCode())
@@ -64,7 +67,13 @@ public class StudentServiceImpl implements IStudentService {
                 .user(user)
                 .build();
 
-        return convertToStudentResponse(studentRepository.save(student));
+        Student savedStudent = studentRepository.save(student);
+
+        emailService.sendActivationEmail(savedStudent);
+
+        return convertToStudentResponse(savedStudent);
+
+
     }
 
     @Override
@@ -91,7 +100,6 @@ public class StudentServiceImpl implements IStudentService {
                 .orElseThrow(() -> new ApiException(ErrorCode.STUDENT_NOT_FOUND));
 
         // 2. Sử dụng mapper để cập nhật dữ liệu từ request vào student
-        // Lưu ý: Gọi đúng hàm updateStudent có @MappingTarget
         studentMapper.updateStudent(student, request);
 
         // 3. Cập nhật thời gian
@@ -117,12 +125,19 @@ public class StudentServiceImpl implements IStudentService {
     @Override
     @Transactional
     public void resetPassword(UUID id) {
+        // 1. Tìm sinh viên
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new ApiException(ErrorCode.STUDENT_NOT_FOUND));
 
+        // 2. Cập nhật mật khẩu mới (Mặc định: 123456)
         User user = student.getUser();
-        user.setPassword(passwordEncoder.encode(student.getStudentCode()));
+        user.setPassword(passwordEncoder.encode("123456"));
         userRepository.save(user);
+
+        // 3. Gửi email thông báo
+        emailService.sendResetPasswordEmail(student);
+
+        log.info("Đã đặt lại mật khẩu cho sinh viên: {}", student.getStudentCode());
     }
 
     @Override

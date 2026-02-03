@@ -44,6 +44,12 @@ dependencies {
 
     //Validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Spring Boot Starter Mail để gửi email
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    // Spring Boot Starter Thymeleaf để xử lý template HTML cho Email
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 }
 
 tasks.named('test') {
