@@ -3,13 +3,20 @@ package com.example.QLTV.service;
 import com.example.QLTV.dto.request.StudentRequest;
 import com.example.QLTV.dto.request.StudentSearchRequest;
 import com.example.QLTV.dto.response.BorrowResponse;
+import com.example.QLTV.dto.response.FineResponse;
 import com.example.QLTV.dto.response.StudentResponse;
+import com.example.QLTV.enity.Fine;
+import com.example.QLTV.enity.Loan;
 import com.example.QLTV.enity.Student;
 import com.example.QLTV.enity.User;
 import com.example.QLTV.enity.enums.UserStatus;
 import com.example.QLTV.exception.ApiException;
 import com.example.QLTV.exception.ErrorCode;
+import com.example.QLTV.mapper.IFineMapper;
+import com.example.QLTV.mapper.ILoanMapper;
 import com.example.QLTV.mapper.IStudentMapper;
+import com.example.QLTV.repository.IFineRepository;
+import com.example.QLTV.repository.ILoanRepository;
 import com.example.QLTV.repository.IStudentRepository;
 import com.example.QLTV.repository.IUserRepository;
 import lombok.AccessLevel;
@@ -32,12 +39,15 @@ import java.util.UUID;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 public class StudentServiceImpl implements IStudentService {
-
+    ILoanRepository loanRepository;
     IStudentRepository studentRepository;
     IUserRepository userRepository;
     PasswordEncoder passwordEncoder;
     IStudentMapper studentMapper;
     EmailService emailService;
+    ILoanMapper loanMapper;
+    IFineRepository fineRepository;
+    IFineMapper fineMapper;
 
     @Override
     @Transactional
@@ -95,17 +105,13 @@ public class StudentServiceImpl implements IStudentService {
     @Override
     @Transactional
     public StudentResponse updateStudent(UUID id, StudentRequest request) {
-        // 1. Tìm student từ DB
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new ApiException(ErrorCode.STUDENT_NOT_FOUND));
 
-        // 2. Sử dụng mapper để cập nhật dữ liệu từ request vào student
         studentMapper.updateStudent(student, request);
 
-        // 3. Cập nhật thời gian
         student.setUpdatedAt(LocalDateTime.now());
 
-        // 4. Lưu vào DB (Hàm save chỉ nhận 1 đối số là 'student')
         return studentMapper.toStudentResponse(studentRepository.save(student));
     }
 
@@ -125,16 +131,14 @@ public class StudentServiceImpl implements IStudentService {
     @Override
     @Transactional
     public void resetPassword(UUID id) {
-        // 1. Tìm sinh viên
+
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new ApiException(ErrorCode.STUDENT_NOT_FOUND));
 
-        // 2. Cập nhật mật khẩu mới (Mặc định: 123456)
         User user = student.getUser();
         user.setPassword(passwordEncoder.encode("123456"));
         userRepository.save(user);
 
-        // 3. Gửi email thông báo
         emailService.sendResetPasswordEmail(student);
 
         log.info("Đã đặt lại mật khẩu cho sinh viên: {}", student.getStudentCode());
@@ -142,15 +146,22 @@ public class StudentServiceImpl implements IStudentService {
 
     @Override
     public List<BorrowResponse> getBorrowHistory(UUID studentId) {
-        // Sau này bạn sẽ tiêm IBorrowingRepository để lấy dữ liệu thực tế tại đây
-        return Collections.emptyList();
+        List<Loan> loans = loanRepository.findAllByStudentIdCustom(studentId);
+        return loans.stream().map(loanMapper::toBorrowResponse).toList();
     }
 
     @Override
     public StudentResponse getViolationAndDebt(UUID studentId) {
-        return studentRepository.findById(studentId)
-                .map(this::convertToStudentResponse)
+        Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new ApiException(ErrorCode.STUDENT_NOT_FOUND));
+
+        List<Fine> fines = fineRepository.findAllByStudentId(studentId);
+        List<FineResponse> fineResponses = fineMapper.toFineResponseList(fines);
+
+        StudentResponse response = studentMapper.toStudentResponse(student);
+        response.setViolations(fineResponses);
+
+        return response;
     }
 
     private StudentResponse convertToStudentResponse(Student student) {

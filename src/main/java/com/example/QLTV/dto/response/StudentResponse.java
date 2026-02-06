@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 @Getter
 @Setter
@@ -19,6 +20,8 @@ public class StudentResponse {
     String clazz;
     Double fineBalance;
     UserStatus status;
+
+    List<FineResponse> violations;
 
     String fullName;
     String email;

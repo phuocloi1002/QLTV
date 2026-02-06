@@ -33,6 +33,5 @@ public interface IStudentService {
     List<BorrowResponse> getBorrowHistory(UUID studentId);
 
     // Xem danh sách vi phạm và công nợ (Fine/Debt)
-    // Bạn có thể tạo thêm DTO riêng cho Violation nếu cần
     StudentResponse getViolationAndDebt(UUID studentId);
 }

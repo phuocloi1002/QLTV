@@ -20,8 +20,6 @@ public interface IStaffMapper {
     @Mapping(source = "user.userRoles", target = "roles")
     StaffResponse toResponse(Staff staff);
 
-    // MapStruct tự động dùng method này:
-    // Set<UserRole> -> Set<String>
     default Set<String> map(List<UserRole> userRoles) {
         if (userRoles == null || userRoles.isEmpty()) {
             return Set.of();

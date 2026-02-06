@@ -16,10 +16,8 @@ import java.util.UUID;
 @Repository
 public interface IStudentRepository extends JpaRepository<Student, UUID> {
 
-    // SỬA LỖI: Đổi kiểu tham số từ Student thành String
     boolean existsByStudentCode(String studentCode);
 
-    // SỬA LỖI: Đổi kiểu tham số từ Student thành String
     @EntityGraph(attributePaths = {"user"})
     Optional<Student> findByStudentCode(String studentCode);
 

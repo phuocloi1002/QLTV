@@ -1,6 +1,6 @@
 package com.example.QLTV.dto.response;
 
-import com.example.QLTV.enity.enums.BookStatus; // Hoặc Enum trạng thái mượn của bạn
+import com.example.QLTV.enity.enums.BookStatus;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
